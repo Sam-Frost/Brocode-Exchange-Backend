@@ -1,0 +1,12 @@
+go 1.26.4
+
+use (
+	./common
+	./db
+	./db-writer
+	./exchange-poller
+	./liquidation-engine
+	./matching-engine
+	./web-server
+	./web-socket-server
+)
