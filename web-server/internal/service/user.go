@@ -40,7 +40,7 @@ func (u *UserService) CreateUser(requestBody dto.CreateUserRequest) (dto.CreateU
 		if err != nil {
 			return createUserResponse, fmt.Errorf("Affiliate code not found: %w", err)
 		}
-		savedUser, err := u.repo.CreateNewUserWithReferral(requestBody, passwordHash, affiliateCode, referredUserId)
+		savedUser, err := u.repo.CreateNewUserWithReferral(requestBody, affiliateCode, passwordHash, referredUserId)
 		if err != nil {
 			return createUserResponse, fmt.Errorf("Saving user with reffered id: %w", err)
 		}
@@ -48,7 +48,7 @@ func (u *UserService) CreateUser(requestBody dto.CreateUserRequest) (dto.CreateU
 		createUserResponse.UserId = savedUser.ID
 
 	} else {
-		savedUser, err := u.repo.CreateNewUser(requestBody, passwordHash, affiliateCode)
+		savedUser, err := u.repo.CreateNewUser(requestBody, affiliateCode, passwordHash)
 		if err != nil {
 			return createUserResponse, fmt.Errorf("Saving user without reffered id: %w", err)
 		}
