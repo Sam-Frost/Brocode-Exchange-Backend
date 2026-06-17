@@ -1,0 +1,51 @@
+syntax = "proto3";
+package protobufs;
+
+option go_package = "github.com/Sam-Frost/accounts-service/protobufs";
+
+service UserBalanceService {
+  rpc CreateUserBalance(CreateUserBalanceRequest) returns (CreateUserBalanceResponse) {}
+  rpc GetUserBalance(GetUserBalanceRequest) returns (GetUserBalanceResponse) {}
+  rpc IncreaseUserBalance(IncreaseUserBalanceRequest) returns (IncreaseUserBalanceResponse) {}
+  rpc LockUserBalance(LockUserBalanceRequest) returns (LockUserBalanceResponse) {}
+}
+
+// Create user balance entry in db
+message CreateUserBalanceRequest {
+  int32 user_id = 1;
+}
+
+message CreateUserBalanceResponse {
+  bool success = 1;
+}
+
+// Get user's current balance(available & locked)
+message GetUserBalanceRequest {
+  int32 user_id = 1;
+}
+
+message GetUserBalanceResponse {
+  int64 available_balance = 1;
+  int64 locked_balance = 2;
+}
+
+// Increase user's available balance
+message IncreaseUserBalanceRequest {
+  int32 user_id = 1;
+  int64 amount = 2;
+}
+
+message IncreaseUserBalanceResponse {
+  int64 updated_balance = 1;
+}
+
+// Lock user's available balance
+message LockUserBalanceRequest {
+  int32 user_id = 1;
+  int64 amount = 2;
+}
+
+message LockUserBalanceResponse {
+  int64 available_balance = 1;
+  int64 locked_balance = 2;
+}

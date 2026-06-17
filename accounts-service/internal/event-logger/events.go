@@ -1,0 +1,12 @@
+package eventLogger
+
+type EventType int
+
+const (
+	CREATE_USER_BALANCE EventType = iota + 1
+	ADD_BALANCE
+	REDUCE_BALANCE
+	LOCK_BALANCE
+	UNLOCK_BALANCE
+	REDUCE_LOCKED_BALANCE
+)

@@ -9,4 +9,5 @@ use (
 	./matching-engine
 	./web-server
 	./web-socket-server
+	./accounts-service
 )

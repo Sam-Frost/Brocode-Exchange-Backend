@@ -71,3 +71,12 @@ func (u *UserRepo) CreateNewUserWithReferral(requestBody dto.CreateUserRequest, 
 
 	return user, nil
 }
+
+func (u *UserRepo) FindUserPasswordByEmail(ctx context.Context, requestBody dto.LoginUserRequest) (*db.FindUserPasswordByEmailRow, error) {
+	userDetails, err := u.server.Query.FindUserPasswordByEmail(ctx, requestBody.Email)
+	if err != nil {
+		return &userDetails, fmt.Errorf("Database Read: %w", err)
+	}
+
+	return &userDetails, nil
+}

@@ -12,10 +12,10 @@ func UserRouter(server *util.Server) {
 
 	userRepo := repo.NewUserRepo(server)
 	userService := service.NewUserService(server, userRepo)
-	userController := handler.NewUserController(server, userService)
+	userHandler := handler.NewUserHandler(server, userService)
 
-	userRouter.POST("/signup", userController.RegisterUser)
-	userRouter.POST("/signin", userController.LoginUser)
-	userRouter.GET("/info", userController.GetUserInfo)
+	userRouter.POST("/signup", userHandler.RegisterUser)
+	userRouter.POST("/signin", userHandler.LoginUser)
+	userRouter.GET("/info", userHandler.GetUserInfo)
 
 }

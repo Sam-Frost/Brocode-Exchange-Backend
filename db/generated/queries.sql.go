@@ -99,3 +99,20 @@ func (q *Queries) FindUserIdByAffiliateCode(ctx context.Context, affiliateCode s
 	err := row.Scan(&id)
 	return id, err
 }
+
+const findUserPasswordByEmail = `-- name: FindUserPasswordByEmail :one
+SELECT id, email, password_hash FROM USERS WHERE email = $1 LIMIT 1
+`
+
+type FindUserPasswordByEmailRow struct {
+	ID           int32
+	Email        string
+	PasswordHash string
+}
+
+func (q *Queries) FindUserPasswordByEmail(ctx context.Context, email string) (FindUserPasswordByEmailRow, error) {
+	row := q.db.QueryRow(ctx, findUserPasswordByEmail, email)
+	var i FindUserPasswordByEmailRow
+	err := row.Scan(&i.ID, &i.Email, &i.PasswordHash)
+	return i, err
+}

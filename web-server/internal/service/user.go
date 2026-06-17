@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/Sam-Frost/web-server/internal/dto"
@@ -58,10 +59,30 @@ func (u *UserService) CreateUser(requestBody dto.CreateUserRequest) (dto.CreateU
 
 	createUserResponse.AffiliateCode = affiliateCode
 
-	if token, err := util.GenerateToken(string(createUserResponse.UserId)); err != nil {
+	if token, err := util.GenerateToken(createUserResponse.UserId); err != nil {
 		return createUserResponse, fmt.Errorf("Genearating JWT token: %w", err)
 	} else {
 		createUserResponse.Token = token
 		return createUserResponse, nil
 	}
+}
+
+func (u *UserService) LoginUser(ctx context.Context, requestBody dto.LoginUserRequest) (dto.LoginUserResponse, error) {
+
+	var loginResponse dto.LoginUserResponse
+
+	userDetail, err := u.repo.FindUserPasswordByEmail(ctx, requestBody)
+	if err != nil {
+		return loginResponse, fmt.Errorf("Reading user from database: %w", err)
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(userDetail.PasswordHash), []byte(requestBody.Password))
+	// if(err )
+	// 0
+	loginResponse.Token, err = util.GenerateToken(userDetail.ID)
+	if err != nil {
+		return loginResponse, fmt.Errorf("Genearting JWT token: %w", err)
+	}
+
+	return loginResponse, nil
 }

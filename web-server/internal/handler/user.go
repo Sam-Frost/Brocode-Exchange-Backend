@@ -9,19 +9,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UserController struct {
+type UserHandler struct {
 	server  *util.Server
 	service service.UserService
 }
 
-func NewUserController(server *util.Server, service service.UserService) UserController {
-	return UserController{
+func NewUserHandler(server *util.Server, service service.UserService) UserHandler {
+	return UserHandler{
 		server:  server,
 		service: service,
 	}
 }
 
-func (u *UserController) RegisterUser(c *gin.Context) {
+func (u *UserHandler) RegisterUser(c *gin.Context) {
 
 	var requestBody dto.CreateUserRequest
 
@@ -50,10 +50,34 @@ func (u *UserController) RegisterUser(c *gin.Context) {
 	})
 }
 
-func (u *UserController) LoginUser(c *gin.Context) {
-	c.JSON(http.StatusCreated, gin.H{})
+func (u *UserHandler) LoginUser(c *gin.Context) {
+
+	var requestBody dto.LoginUserRequest
+
+	if err := c.ShouldBindJSON(requestBody); err != nil {
+		if validationErrors, ok := util.CreateValidationErrorResponse(err); ok {
+			c.AbortWithStatusJSON(http.StatusBadRequest, dto.APIResponse{
+				Success: false,
+				Error:   validationErrors,
+			})
+		}
+		c.AbortWithStatusJSON(http.StatusBadRequest, dto.APIResponse{
+			Success: false,
+			Error:   err,
+		})
+	}
+
+	loginResponse, err := u.service.LoginUser(c.Request.Context(), requestBody)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusCreated, dto.APIResponse{
+		Success: true,
+		Data:    loginResponse,
+	})
 }
 
-func (u *UserController) GetUserInfo(c *gin.Context) {
+func (u *UserHandler) GetUserInfo(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{})
 }

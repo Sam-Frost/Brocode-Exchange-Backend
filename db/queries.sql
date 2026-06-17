@@ -4,6 +4,8 @@ INSERT INTO USERS ( name, email, birth_date, password_hash, affiliate_code) VALU
 -- name: CreateUserWithReferral :one
 INSERT INTO USERS ( name, email, birth_date, password_hash, affiliate_code, referrer_id) VALUES ( $1, $2, $3, $4, $5, $6) RETURNING *;
 
-
 -- name: FindUserIdByAffiliateCode :one
 SELECT id FROM USERS WHERE affiliate_code = $1 LIMIT 1;
+
+-- name: FindUserPasswordByEmail :one
+SELECT id, email, password_hash FROM USERS WHERE email = $1 LIMIT 1;
