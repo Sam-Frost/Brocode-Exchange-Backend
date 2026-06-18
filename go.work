@@ -1,13 +1,14 @@
 go 1.26.4
 
 use (
+	./accounts-service
 	./common
 	./db
 	./db-writer
 	./exchange-poller
 	./liquidation-engine
 	./matching-engine
+	./snapshot-service
 	./web-server
 	./web-socket-server
-	./accounts-service
 )

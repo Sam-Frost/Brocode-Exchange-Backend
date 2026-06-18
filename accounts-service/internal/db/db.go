@@ -10,12 +10,12 @@ import (
 
 type db struct {
 	mu   sync.RWMutex
-	data map[int32]*UserData
+	data map[int32]*userData
 }
 
 var database db = db{
 	mu:   sync.RWMutex{},
-	data: make(map[int32]*UserData),
+	data: make(map[int32]*userData),
 }
 
 // type SpotBalance struct {
@@ -23,7 +23,7 @@ var database db = db{
 // 	LockedBalanceTick    int64
 // }
 
-type UserData struct {
+type userData struct {
 	BalanceData *balance
 	// MarketMap   map[int32]SpotBalance
 }
@@ -36,7 +36,7 @@ func CreateNewUser(userId int32) {
 	database.mu.Lock()
 	defer database.mu.Unlock()
 
-	database.data[userId] = &UserData{
+	database.data[userId] = &userData{
 		BalanceData: createBalance(userId),
 		// MarketMap:   make(map[int32]SpotBalance),
 	}
@@ -70,4 +70,11 @@ func GetUserBalanceData(userId int32) (*balance, error) {
 	}
 
 	return userData.BalanceData, nil
+}
+
+func GetDatabase() *map[int32]*userData {
+	database.mu.RLock()
+	defer database.mu.RUnlock()
+
+	return &database.data
 }
