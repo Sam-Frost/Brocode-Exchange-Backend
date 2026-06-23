@@ -41,15 +41,6 @@ func SnapshotDatabase() {
 
 }
 
-func RecreateDatabase() {
-	file, _ := os.Open(getSnapshotDir())
-
-	decoder := gob.NewDecoder(file)
-
-	decoder.Decode(db.GetDatabase())
-	file.Close()
-}
-
 // func PrettyPrintDatabase() {
 // 	db := db.GetDatabase()
 
