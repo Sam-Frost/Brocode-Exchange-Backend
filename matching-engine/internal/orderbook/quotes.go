@@ -14,11 +14,11 @@ func (q *QuotesWrapper) addQuote(quote Quote) {
 
 func (q *QuotesWrapper) removeQuote(quote Quote) {
 	for index, currQuote := range q.quotes {
-		if currQuote.id == quote.id {
-			if currQuote.quantity == quote.quantity {
+		if currQuote.Id == quote.Id {
+			if currQuote.Quantity == quote.Quantity {
 				q.quotes = slices.Delete(q.quotes, index, index+1)
 			} else {
-				q.quotes[index].quantity -= quote.quantity
+				q.quotes[index].Quantity -= quote.Quantity
 			}
 			return
 		}
@@ -27,10 +27,9 @@ func (q *QuotesWrapper) removeQuote(quote Quote) {
 
 // Represents a single quote(ask/bid)
 type Quote struct {
-	id               int64
-	orderId          int32
-	userId           int32
-	quantity         int64
-	price            int64
-	lockedCollateral int64
+	Id       int64
+	OrderId  string
+	UserId   int32
+	Quantity int64
+	Price    int64
 }
