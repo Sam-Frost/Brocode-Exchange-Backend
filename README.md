@@ -1,6 +1,6 @@
 # Overall Architecture
 
-![Alt text](/home/sam/Pictures/Screenshots/Screenshot From 2026-08-10 19-11-33.png)
+![](docs/architecture.png)
 
 ## Web Server
 - Create, login user
