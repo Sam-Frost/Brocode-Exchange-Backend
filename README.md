@@ -1,3 +1,7 @@
+# Overall Architecture
+
+![](image.png)
+
 ## Web Server
 - Create, login user
 - Add balance of user
