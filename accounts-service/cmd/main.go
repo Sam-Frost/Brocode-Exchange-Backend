@@ -1,7 +1,11 @@
 package main
 
 import (
-	"sync"
+	"context"
+	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
 
 	eventLogger "github.com/Sam-Frost/accounts-service/internal/event-logger"
 	"github.com/Sam-Frost/accounts-service/internal/grpc"
@@ -20,23 +24,33 @@ func main() {
 	eventLogger.InitOffsetTracker()
 
 	// -------------------------CAN BE WRAPPED IN INIT FUNCTION---------------------------
+	//
 
-	var wg sync.WaitGroup
-	wg.Add(3)
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
 
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	errChan := make(chan error, 4)
 	// Start gRPC server to communitcate with web-server
-	go grpc.StartGrpcServer()
+	go func() { errChan <- grpc.StartGrpcServer(ctx) }()
 
 	// Start consuming events comming from the matching engine
-	go service.ConsumeMatchingEngineEvents()
+	go func() { errChan <- service.ConsumeMatchingEngineEvents(ctx) }()
 
 	// Start event logging
-	go eventLogger.InitEventLogger()
+	go func() { errChan <- eventLogger.InitEventLogger(ctx) }()
 
 	// Start kafka producer to send event log to kafka broker
-	go eventLogger.SendEventToKafkaBroker()
+	go func() { errChan <- eventLogger.SendEventToKafkaBroker(ctx) }()
 
-	wg.Wait()
-
+	select {
+	case err := <-errChan:
+		fmt.Printf("Copmonent Failed. Shuting system down... \n Error :  %s", err)
+		cancel()
+	case <-ctx.Done():
+		fmt.Printf("Shutting down....")
+	}
 	// internal.RunTest()
 }

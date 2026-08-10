@@ -1,19 +1,20 @@
 package grpc
 
 import (
+	"context"
+	"errors"
 	"fmt"
-	"log"
 	"net"
 
 	"github.com/Sam-Frost/accounts-service/protobufs"
 	"google.golang.org/grpc"
 )
 
-func StartGrpcServer() {
+func StartGrpcServer(ctx context.Context) error {
 
 	lis, err := net.Listen("tcp", "localhost:50051")
 	if err != nil {
-		log.Fatalf("Failed to listen %v", err)
+		return errors.New("Failed to listen ")
 	}
 
 	fmt.Println("Starting listening for gRPC server")
@@ -21,4 +22,5 @@ func StartGrpcServer() {
 	protobufs.RegisterUserBalanceServiceServer(grpcServer, &userBalance{})
 	grpcServer.Serve(lis)
 
+	return nil
 }

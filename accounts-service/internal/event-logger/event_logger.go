@@ -1,6 +1,7 @@
 package eventLogger
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -54,7 +55,7 @@ func EmitEvent(eventData Event) {
 	eventChannel <- eventData
 }
 
-func InitEventLogger() {
+func InitEventLogger(ctx context.Context) error {
 	filePath := getLogFilePath()
 	eventFile, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
@@ -70,6 +71,8 @@ func InitEventLogger() {
 		jsonData = append(jsonData, byte('\n'))
 		eventFile.Write(jsonData)
 	}
+
+	return nil
 }
 
 func InitOffsetTracker() {
@@ -100,7 +103,7 @@ func InitOffsetTracker() {
 	}
 }
 
-func SendEventToKafkaBroker() {
+func SendEventToKafkaBroker(ctx context.Context) error {
 	offset := getCurrentOffset()
 	fmt.Println(offset)
 
@@ -109,6 +112,8 @@ func SendEventToKafkaBroker() {
 	// Send to Kafka
 	// Write to file the row sent
 	//
+	//
+	return nil
 
 }
 
